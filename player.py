@@ -1,10 +1,11 @@
 class Player:
-    def __init__(self, name):
+    def __init__(self, name, chipstack):
         self.hand = []
         self.hand_value = 0
         self.busted = False
         self.got_blackjack = False
-        self.name = name
+        self.name: str = name
+        self.chipstack: int = chipstack
 
     def get_hand_value(self):
         # Hand value must be recalculated after each card dealt in case previous ace value must be changed from 11 to 1
@@ -38,7 +39,7 @@ class Player:
     def deal_cards(self, card_deck):
         for i in range(2):
             self.hand.append(card_deck.pop())
-        print(self.name + " was dealt " + str(self.hand))
+        print("\n" + self.name + " was dealt " + str(self.hand) + ".")
         self.get_hand_value()
         # Inform user of hand values of anything under 21
         self.print_hand_value()
@@ -46,7 +47,7 @@ class Player:
     def hit(self, card_deck):
         new_card = card_deck.pop()
         self.hand.append(new_card)
-        print(self.name + " hit and drew " + str(new_card) + "\n")
+        print(self.name + " hit and drew " + str(new_card) + ".\n")
         self.print_hand()
         self.get_hand_value()
         # Inform user of hand values of anything under 21
@@ -55,10 +56,35 @@ class Player:
 
     def stay(self):
         self.get_hand_value()
-        print(self.name + " stayed at " + str(self.hand_value) + "\n")
+        print(self.name + " stayed at " + str(self.hand_value) + ".\n")
 
     def print_hand(self):
-        print(self.name + "'s current hand is " + str(self.hand))
+        print(self.name + "'s current hand is " + str(self.hand) + ".")
 
     def print_hand_value(self):
-        print(self.name + "'s current hand value is " + str(self.hand_value) + "\n")
+        print(self.name + "'s current hand value is " + str(self.hand_value) + ".\n")
+
+    def wager(self, amount):
+        self.chipstack -= amount
+        print("\n" + self.name + " wagered $" + str(amount) + ".\n")
+        return amount
+
+    def won_hand(self, amount):
+        self.chipstack += amount
+
+    def print_chipsatck(self):
+        print(self.name + "'s current chip stack value is $" + str(self.chipstack) + ".\n")
+
+class Dealer(Player):
+    # Dealer only dealt one card
+    def deal_cards(self, card_deck):
+        self.hand.append(card_deck.pop())
+        print(self.name + " was dealt " + str(self.hand) + ".")
+        self.get_hand_value()
+
+    def wager(self, amount):
+        self.chipstack -= amount
+        return amount
+
+    def print_chipsatck(self):
+        print("\n" + self.name + "'s current chip stack value is $" + str(self.chipstack) + ".")
